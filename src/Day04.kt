@@ -9,7 +9,7 @@ fun Position.inBoundsOf(m: CharMatrix) = row in m.indices && col in m[0].indices
 
 operator fun CharMatrix.contains(p: Position) = p.row in indices && p.col in get(0).indices
 
-fun CharMatrix.allPositions(padding: Int = 0) = 
+fun CharMatrix.allPositions(padding: Int = 0) =
     (padding..indices.last-padding).flatMap { row ->
         (padding..get(0).indices.last-padding).map { col -> Position(row, col) }
     }
