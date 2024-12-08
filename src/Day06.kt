@@ -2,6 +2,9 @@ data class Guard(val pos: Position, val dir: Direction)
 data class Limits(val rows: Int, val cols:Int)
 data class GuardMap(val guard: Guard, val obstructions: Set<Position>, val limits: Limits)
 
+fun Position.inBounds(limits: Limits) =
+    row in 0..<limits.rows && col in 0..<limits.cols
+
 fun main() {
     fun List<String>.toGuardMap(): GuardMap {
         var guard: Guard? = null
@@ -26,9 +29,6 @@ fun main() {
         Direction.LEFT -> Direction.UP
         else -> error("Invalid direction")
     }
-
-    fun Position.inBounds(limits: Limits) =
-        row in 0..<limits.rows && col in 0..<limits.cols
 
     fun Guard.move(obstructions: Set<Position>): Guard {
         var d = dir
