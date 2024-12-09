@@ -13,7 +13,7 @@ inline fun Limits.forEachPosition(block: (Position) -> Unit) {
 fun main() {
     fun List<String>.toAntennasMap(): AntennasMap {
         val limits = Limits(size, get(0).length)
-        val map = buildMap<_,List<Position>> {
+        val map = buildMap<Char,List<Position>> {
             limits.forEachPosition { p ->
                 val freq = this@toAntennasMap[p.row][p.col]
                 if (freq != '.') this[freq] = getOrDefault(freq, emptyList()) + p
@@ -22,7 +22,7 @@ fun main() {
         return AntennasMap(map, limits)
     }
 
-    fun AntennasMap.processPairs(block: (Position, Position) -> Unit) {
+    fun AntennasMap.forEachPairInSameFrequency(block: (Position, Position) -> Unit) {
         freqs.values.forEach { locs ->
             locs.forEachIndexed { idx, p1 ->
                 for(i in idx+1..<locs.size) block(p1,locs[i])
@@ -32,7 +32,7 @@ fun main() {
 
     fun part1(am: AntennasMap): Int {
         val antinodes = mutableSetOf<Position>()
-        am.processPairs { p1, p2 ->
+        am.forEachPairInSameFrequency { p1, p2 ->
             val dif = p2 - p1
             (p2+dif).let { if (it in am.limits) antinodes += it }
             (p1-dif).let { if (it in am.limits) antinodes += it }
@@ -42,12 +42,11 @@ fun main() {
 
     fun part2(am: AntennasMap): Int {
         val antinodes = mutableSetOf<Position>()
-        am.processPairs { p1, p2 ->
-            antinodes += p1 ; antinodes += p2
+        am.forEachPairInSameFrequency { p1, p2 ->
             val dif = p2 - p1
-            var p = p2 + dif
+            var p = p2
             while (p in am.limits) { antinodes += p ; p += dif }
-            p = p1 - dif
+            p = p1
             while (p in am.limits) { antinodes += p ; p -= dif }
         }
         return antinodes.size
