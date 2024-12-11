@@ -1,14 +1,15 @@
 typealias Rules = Map<Int, Set<Int>>
 typealias Update = List<Int>
+typealias Updates = List<Update>
 
 fun main() {
-    fun List<String>.toRules(): Rules =
+    fun Lines.toRules(): Rules =
         takeWhile { it.isNotEmpty() }
             .map { it.split('|').map(String::toInt) }
             .groupBy({ it[0] }, { it[1] })
             .mapValues { it.value.toSet() }
 
-    fun List<String>.toUpdates(): List<Update> =
+    fun Lines.toUpdates(): Updates =
         drop( indexOf("")+1 )
             .map { it.split(',').map(String::toInt) }
 
@@ -17,16 +18,16 @@ fun main() {
             rules[first()]?.containsAll(it) == true && it.isValidFor(rules)
         }
 
-    fun List<Update>.sumOfMidPages() = sumOf { it[ it.size/2 ] }
+    fun Updates.sumOfMidPages() = sumOf { it[ it.size/2 ] }
 
-    fun part1(rules: Rules, updates: List<Update>): Int = updates
+    fun part1(rules: Rules, updates: Updates): Int = updates
         .filter { it.isValidFor(rules) }
         .sumOfMidPages()
 
     fun Update.sortBy(rules: Rules): Update =
         sortedWith { p1, p2 -> if (rules[p1]?.contains(p2) == true) -1 else 1 }
 
-    fun part2(rules: Rules, updates: List<Update>): Int = updates
+    fun part2(rules: Rules, updates: Updates): Int = updates
         .filterNot { it.isValidFor(rules) }
         .map { it.sortBy(rules) }
         .sumOfMidPages()

@@ -1,28 +1,26 @@
 import kotlin.time.measureTime
 
-typealias Stones = List<String>
+typealias Stone = String
+typealias Stones = List<Stone>
 
 fun main() {
-    fun List<String>.toStones(): Stones =
+    fun Lines.toStones(): Stones =
         get(0).split(' ')
 
-    fun String.blink() : List<String> = when {
-        this == "0" -> listOf("1")
-        this.length % 2 == 0 -> listOf(
-            substring(0,length/2),
-            substring(length/2).toLong().toString()
-        )
-        else -> listOf((toLong() * 2024).toString())
+    fun Stone.blink(): Stones = when {
+        this == "0"     -> listOf("1")
+        length % 2 == 0 -> listOf(take(length/2), drop(length/2).toLong().toString())
+        else            -> listOf((toLong() * 2024).toString())
     }
 
-    val memStones = mutableMapOf<Pair<String,Int>,Long>()
+    val memStonesBlinks = mutableMapOf<Pair<Stone,Int>,Long>()
 
-    fun String.numberOfStonesAfter(blinks: Int): Long {
+    fun Stone.numberOfStonesAfter(blinks: Int): Long {
         if (blinks == 0) return 1
-        memStones[this to blinks]?.let { return it }
+        memStonesBlinks[this to blinks]?.let { return it }
         val stones = blink()
         return stones.sumOf { it.numberOfStonesAfter(blinks - 1) }
-            .also { memStones[this to blinks] = it }
+            .also { memStonesBlinks[this to blinks] = it }
     }
 
     fun part2(s: Stones, blinks: Int = 75): Long =
@@ -41,6 +39,6 @@ fun main() {
 
     val input = readInput("Day11").toStones()
     part1(input).println() // 224529
-    // part1(input, 75).println()   -> Out of memory
+    //part1(input, 75).println()   // -> Out of memory
     part2(input).println() // 266820198587914
 }

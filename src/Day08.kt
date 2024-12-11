@@ -1,16 +1,10 @@
 
 data class AntennasMap(val freqs: Map<Char,List<Position>>, val limits: Limits)
 
-operator fun Position.minus(other: Position) = Position(row - other.row, col - other.col)
-operator fun Position.plus(other: Position) = Position(row + other.row, col + other.col)
-
-operator fun Limits.contains(p: Position) = p.inBounds(this)
-
-inline fun Limits.forEachPosition(block: (Position) -> Unit) {
-    for (row in 0 until rows) for (col in 0 until cols) block(Position(row, col))
-}
-
 fun main() {
+    operator fun Position.minus(other: Position) = Position(row - other.row, col - other.col)
+    operator fun Position.plus(other: Position) = Position(row + other.row, col + other.col)
+
     fun List<String>.toAntennasMap(): AntennasMap {
         val limits = Limits(size, get(0).length)
         val map = buildMap<Char,List<Position>> {

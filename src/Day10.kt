@@ -1,19 +1,8 @@
 
-typealias Map2D<T> = List<List<T>>
-
-fun <T> Map2D<T>.allPositions(): Sequence<Position> = sequence {
-    for (row in indices) for (col in get(row).indices) yield(Position(row, col))
-}
-operator fun <T> Map2D<T>.get(p: Position) = get(p.row)[p.col]
-operator fun <T> Map2D<T>.contains(p: Position) = p.row in indices && p.col in get(p.row).indices
-fun <T> Map2D<T>.getOrNull(p: Position) = if (p in this) get(p) else null
-
-val orthogonalDirections = listOf(Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT)
-
 typealias HeightMap = Map2D<Int>
 
 fun main() {
-    fun List<String>.toHeightMap(): HeightMap =
+    fun Lines.toHeightMap(): HeightMap =
         map { line -> line.map { it - '0' } }
 
     fun HeightMap.nextPositionsOf(from: Position): List<Position> =

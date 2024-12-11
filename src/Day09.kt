@@ -1,5 +1,6 @@
 
 data class Blocks(val from: Int, val to: Int)
+typealias Disk = Array<Int>
 
 fun main() {
     val EMPTY = -1
@@ -7,7 +8,7 @@ fun main() {
      * Converts the disk map in a string to a disk map of block ids.
      * Each block as an id (of the file) from 0 to n-1 or -1 if it is empty.
      */
-    fun String.toBlocksArray(): Array<Int> {
+    fun String.toDisk(): Disk {
         val disk = Array( sumOf { it - '0' } ) { EMPTY }
         var di = 0
         for ((id, idx) in (indices step 2).withIndex()) {
@@ -17,11 +18,11 @@ fun main() {
         return disk
     }
 
-    fun Array<Int>.checksum(): Long = foldIndexed(0L){ idx, acc, id ->
+    fun Disk.checksum(): Long = foldIndexed(0L){ idx, acc, id ->
         acc + if(id!=EMPTY) id.toLong()*idx else 0L
     }
 
-    fun part1(disk: Array<Int>): Long {
+    fun part1(disk: Disk): Long {
         var i = 0 // index of empty blocks
         var j = disk.lastIndex // index of non-empty blocks
         while (true) {
@@ -34,7 +35,7 @@ fun main() {
         return disk.checksum()
     }
 
-    fun Array<Int>.findFile(id: Int): Blocks {
+    fun Disk.findFile(id: Int): Blocks {
         require(id >= 0)
         var i = lastIndex
         while (this[i] != id) i--
@@ -43,7 +44,7 @@ fun main() {
         return Blocks(i+ if(i>0)1 else 0, end)
     }
 
-    fun Array<Int>.findFree(spaceSize: Int): Int? {
+    fun Disk.findFree(spaceSize: Int): Int? {
         var i = 0
         while (i<size) {
             while (this[i] != EMPTY) i++
@@ -56,11 +57,11 @@ fun main() {
         return null
     }
 
-    fun Array<Int>.set(from: Int, size: Int, id: Int) {
+    fun Disk.set(from: Int, size: Int, id: Int) {
         for (i in from..<from+size) this[i] = id
     }
 
-    fun part2(disk: Array<Int>): Long {
+    fun part2(disk: Disk): Long {
         for(id  in disk.last { it != EMPTY } downTo 0) {
             val file = disk.findFile(id)
             val size = file.to-file.from
@@ -73,7 +74,7 @@ fun main() {
         return disk.checksum()
     }
 
-    val testInput = readInput("Day09_test")[0].toBlocksArray()
+    val testInput = readInput("Day09_test")[0].toDisk()
     check(
         testInput.joinToString("") { if(it==-1) "." else it.toString() } ==
         "00...111...2...333.44.5555.6666.777.888899"
@@ -81,7 +82,7 @@ fun main() {
     check(part1(testInput.clone()) == 1928L)
     check(part2(testInput) == 2858L)
 
-    val input = readInput("Day09")[0].toBlocksArray()
+    val input = readInput("Day09")[0].toDisk()
     part1(input.clone()).println() // 6320029754031
     part2(input).println() // 6347435485773
 }

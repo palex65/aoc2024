@@ -1,10 +1,11 @@
 
 data class Equation(val test: Long, val values: List<Long>)
+typealias Equations = List<Equation>
 
 operator fun Long.plus(l: List<Long>) = listOf(this) + l
 
 fun main() {
-    fun List<String>.toEquations(): List<Equation> = map { line ->
+    fun Lines.toEquations(): Equations = map { line ->
         val elems = line.split(' ')
         Equation(
             test = elems[0].substringBefore(':').toLong(),
@@ -23,13 +24,13 @@ fun main() {
     fun add(a: Long, b: Long) = a + b
     fun multiply(a: Long, b: Long) = a * b
 
-    fun part1(eqs: List<Equation>): Long = eqs
+    fun part1(eqs: Equations): Long = eqs
         .filter { it.isTrue(::add, ::multiply) }
         .sumOf { it.test }
 
     fun concat(a: Long, b:Long) = "$a$b".toLong()
 
-    fun part2(eqs: List<Equation>): Long = eqs
+    fun part2(eqs: Equations): Long = eqs
         .filter { it.isTrue(::add, ::multiply, ::concat) }
         .sumOf { it.test }
 

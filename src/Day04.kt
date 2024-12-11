@@ -1,47 +1,20 @@
 
-typealias CharMatrix = List<String>
+typealias CharMap = Map2D<Char>
 
-data class Position(val row: Int, val col: Int)
-
-operator fun CharMatrix.get(p: Position) = get(p.row)[p.col]
-
-fun Position.inBoundsOf(m: CharMatrix) = row in m.indices && col in m[0].indices
-
-operator fun CharMatrix.contains(p: Position) = p.row in indices && p.col in get(0).indices
-
-fun CharMatrix.allPositions(padding: Int = 0) =
-    (padding..indices.last-padding).flatMap { row ->
-        (padding..get(0).indices.last-padding).map { col -> Position(row, col) }
-    }
-
-data class Direction(val dRow: Int, val dCol: Int) {
-    companion object {
-        val UP = Direction(-1, 0)
-        val DOWN = Direction(1, 0)
-        val LEFT = Direction(0, -1)
-        val RIGHT = Direction(0, 1)
-        val UP_LEFT = Direction(-1, -1)
-        val UP_RIGHT = Direction(-1, 1)
-        val DOWN_LEFT = Direction(1, -1)
-        val DOWN_RIGHT = Direction(1, 1)
-        val values = listOf(UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT)
-    }
-}
-
-operator fun Position.plus(dir: Direction) = Position(row + dir.dRow, col + dir.dCol)
+fun Lines.toCharMap(): CharMap = map { it.toList() }
 
 fun main() {
-    fun part1(m: CharMatrix): Int =
+    fun part1(m: CharMap): Int =
         m.allPositions().sumOf { pos ->
-            Direction.values.count { dir ->
+            allDirections.count { dir ->
                 var p = pos
-                "XMAS".all { p.inBoundsOf(m) && m[p] == it
-                    .also { p += dir }
-                }
+                "XMAS".all { m.getOrNull(p) == it .also { p += dir } }
             }
         }
 
-    fun part2(m: CharMatrix): Int = m.allPositions(padding = 1)
+    fun Position.isEdge(m: CharMap)= row == 0 || col == 0 || row == m.size-1 || col == m[0].size-1
+
+    fun part2(m: CharMap): Int = m.allPositions().filter{ !it.isEdge(m) }
         .count { pos ->
             m[pos] == 'A' && run {
                 val ul = m[pos + Direction.UP_LEFT]
@@ -53,11 +26,11 @@ fun main() {
             }
         }
 
-    val testInput = readInput("Day04_test")
+    val testInput = readInput("Day04_test").toCharMap()
     check(part1(testInput) == 18)
     check(part2(testInput) == 9)
 
-    val input = readInput("Day04")
+    val input = readInput("Day04").toCharMap()
     part1(input).println()  // 2514
     part2(input).println()  // 1888
 }
