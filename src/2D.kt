@@ -3,7 +3,9 @@
  * Types: Position, Direction, Map2D, Limits
  */
 
-data class Position(val row: Int, val col: Int)
+data class Position(val row: Int, val col: Int) {
+    override fun toString() = "($row, $col)"
+}
 
 data class Direction(val dRow: Int, val dCol: Int) {
     companion object {
