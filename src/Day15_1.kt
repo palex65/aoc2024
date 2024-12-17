@@ -1,8 +1,8 @@
 fun main() {
     val input = readInput("Day15")
-    val map: List<CharArray> = input
+    val map: CharMatrix = input
         .takeWhile { it.isNotEmpty() }
-        .map { it.toCharArray() }
+        .toCharMatrix()
 
     val moves = input
         .dropWhile { it.isNotEmpty() }.drop(1)
@@ -15,18 +15,8 @@ fun main() {
             else -> error("Invalid move $it")
         } }
 
-    fun List<CharArray>.findActors(c: Char): List<Position>  {
-        val actors = mutableListOf<Position>()
-        for (row in indices) for (col in this[row].indices)
-                if (this[row][col] == c) actors.add(Position(row, col))
-        return actors
-    }
-
-    operator fun List<CharArray>.get(p: Position): Char = this[p.row][p.col]
-    operator fun List<CharArray>.set(p: Position, c: Char) { this[p.row][p.col] = c }
-
-    var robot = map.findActors('@').single()
-    val boxes = map.findActors('O').toMutableList()
+    var robot = map.find('@')
+    val boxes = map.findAll('O').toMutableList()
 
     fun moveRobot(to: Position) {
         map[robot] = '.'

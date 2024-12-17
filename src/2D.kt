@@ -61,10 +61,37 @@ fun Position.inBounds(limits: Limits) = row in 0..<limits.rows && col in 0..<lim
 operator fun Limits.contains(p: Position) = p.inBounds(this)
 
 fun Limits.allPositions(): Sequence<Position> = sequence {
-    for (row in 0 until rows) for (col in 0 until cols) yield(Position(row, col))
+    for (row in 0..<rows) for (col in 0..<cols) yield(Position(row, col))
 }
 
 inline fun Limits.forEachPosition(block: (Position) -> Unit) =
     allPositions().forEach(block)
+
+
+
+typealias CharMatrix = List<CharArray>
+
+fun Lines.toCharMatrix(): CharMatrix = map { it.toCharArray() }
+
+operator fun CharMatrix.get(p: Position): Char = this[p.row][p.col]
+operator fun CharMatrix.set(p: Position, c: Char) { this[p.row][p.col] = c }
+
+fun CharMatrix.find(c: Char): Position {
+    Limits(size, this[0].size).forEachPosition { p ->
+        if (this[p] == c) return p
+    }
+    error("Not found $c")
+}
+
+fun CharMatrix.findAll(c: Char): List<Position> {
+    val actors = mutableListOf<Position>()
+    Limits(size, this[0].size).forEachPosition { p ->
+        if (this[p] == c) actors.add(p)
+    }
+    return actors
+}
+
+
+
 
 
