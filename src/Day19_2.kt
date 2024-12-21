@@ -5,15 +5,14 @@ fun main() {
     val designs = input.drop(2)
 
     val mem = mutableMapOf<String,Long>()
-
     fun possibles(design: String): Long {
+        if (design.isEmpty()) return 1
         mem[design]?.let { return it }
-        var total = if (design in patterns) 1L else 0
-        for (n in 1 ..< design.length)
-            if (design.take(n) in patterns)
-                total += possibles(design.drop(n))
-        mem[design] = total
-        return total
+        return (1..design.length)
+            .filter { design.take(it) in patterns }
+            .sumOf { possibles(design.drop(it)) }
+            .also { mem[design] = it }
     }
+
     println( designs.sumOf{ possibles(it) } ) // 796449099271652
 }

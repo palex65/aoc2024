@@ -36,6 +36,8 @@ val orthogonalDirections = listOf(
 
 operator fun Position.plus(dir: Direction) = Position(row + dir.dRow, col + dir.dCol)
 
+fun aroundOf(p: Position, dirs: List<Direction> =orthogonalDirections) = dirs.map { p + it }
+
 /**
  * 2D map type
  */
@@ -90,6 +92,12 @@ fun CharMatrix.findAll(c: Char): List<Position> {
     }
     return actors
 }
+
+
+typealias IntMatrix = List<IntArray>
+
+fun intMatrix(rows: Int, cols: Int, init: (Int, Int) -> Int): IntMatrix =
+    List(rows) { row -> IntArray(cols) { col -> init(row, col) } }
 
 
 

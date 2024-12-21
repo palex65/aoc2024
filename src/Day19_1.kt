@@ -6,12 +6,10 @@ fun main() {
     val patterns = input[0].split(", ").toSet()
     val designs = input.drop(2)
 
-    fun isPossible(design: String): Boolean {
-        if (design in patterns) return true
-        for(n in design.length-1 downTo 1)
-            if (design.take(n) in patterns && isPossible(design.drop(n)))
-                return true
-        return false
-    }
+    fun isPossible(design: String): Boolean = design in patterns ||
+        (1 ..< design.length).any { n ->
+            design.take(n) in patterns && isPossible(design.drop(n))
+        }
+
     println( designs.count { isPossible(it) } ) // 267
 }
