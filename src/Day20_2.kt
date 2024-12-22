@@ -28,8 +28,8 @@ fun main() {
         .sumOf { (p1, d1) -> deltas
             .mapNotNull { (dr, dc, abs) -> Position(p1.row+dr, p1.col+dc).takeIf { it in limits }?.let { it to abs } }
             .count { (p2, abs) ->
-                path[p2]?.let { d2 -> d1 + maxDistance - d2 + abs <= maxDistance - min } ?: false
+                path[p2]?.let { d2 -> d1 + maxDistance - d2 + abs <= maxDistance - min } == true
             }
         }
-    println(cheats) // 971737    println(cheats) // 971737
+    println(cheats) // 971737
 }
